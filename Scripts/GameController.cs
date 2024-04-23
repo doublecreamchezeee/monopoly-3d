@@ -9,20 +9,22 @@ using UnityEngine.UIElements;
 
 public class GameController : MonoBehaviour
 {
+    // dice setting
     private DiceController[] diceControllerObject;
+    // dice config for speed, torque, ...
     private DiceData diceData;
-
-
+    // referennce of dice prefabs
     public GameObject diceObject;
+
+    // basic func
     public Transform summonPos;
     public Rigidbody diceRigibody;
+    public int valueDice;
 
+    // chessbox controller
     private ChessBoxController chessBoxController;
 
-    public int valueDice;
-    private bool isFinishDice;
-    private bool isInitDice;
-
+    // player controller
     private PlayerController playerController;
     private int turn;
     private bool isEndTurn;
@@ -35,13 +37,7 @@ public class GameController : MonoBehaviour
         {
             diceControllerObject[i] = new DiceController();
         }
-        diceData = new DiceData();
-        diceData.summonPos = summonPos;
-        diceData.diceObject = diceObject;
-        diceData.diceRigidbody = diceRigibody;
-
-        isFinishDice = false;
-        isInitDice = false;
+        diceData = new DiceData(summonPos, diceRigibody, diceObject, false, false);
         isEndTurn = false;
     }
 
@@ -67,29 +63,29 @@ public class GameController : MonoBehaviour
         {
             if (diceControllerObject[0].CheckQuantity())
             {
-                isFinishDice = false;
-                isInitDice = true;
+                diceData.isFinishDice = false;
+                diceData.isInitDice = true;
                 diceControllerObject[0].Init(diceData);
                 diceControllerObject[1].Init(diceData);
                 diceControllerObject[0].Process();
                 diceControllerObject[1].Process();
             }
         }
-        if (isInitDice)
+        if (diceData.isInitDice)
         {
             if (diceControllerObject[0].CheckStop() && diceControllerObject[1].CheckStop())
             {
-                isFinishDice = true;
+                diceData.isFinishDice = true;
                 valueDice = diceControllerObject[0].GetValueRoll() + diceControllerObject[1].GetValueRoll();
 
             }
         }
 
-        if (isFinishDice)
+        if (diceData.isFinishDice)
         {
             playerController.Move(valueDice, turn);
-            isFinishDice = false;
-            isInitDice = false;
+            diceData.isFinishDice = false;
+            diceData.isInitDice = false;
         }
 
         if (isEndTurn)

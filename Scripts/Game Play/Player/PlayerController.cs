@@ -33,10 +33,11 @@ public class PlayerController : MonoBehaviour
 
     public void InitPlayer()
     {
-        player = new GameObject[2];
-        
-        player[0] = GameObject.Instantiate(playerPrefab[0],summonPlace, true);
-        player[1] = GameObject.Instantiate(playerPrefab[1],summonPlace,true);
+        player = new GameObject[size];
+        for (int i = 0; i< size; i++)
+        {
+            player[i] = Instantiate(playerPrefab[i], summonPlace, true);
+        }
     }
 
     public void Move(int move, int numberPlayer) 
