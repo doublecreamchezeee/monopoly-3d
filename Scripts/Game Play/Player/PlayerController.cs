@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -7,11 +8,11 @@ public class PlayerController : MonoBehaviour
     public PlayerData[] playerData;
     public string[] namelist;
     public Transform summonPlace;
+    private GameObject[] player;
 
     private int size;
     private GameObject currentPos;
     private GameObject targetPos;
-    private GameObject[] player;
 
     private ChessBoxController boxController;
     public TextMeshPro textBox;
@@ -22,7 +23,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        size = player.Length;
+        //size = player.Length;
         playerData = new PlayerData[size];
         for (int i = 0; i< size; i++)
         {
@@ -31,15 +32,32 @@ public class PlayerController : MonoBehaviour
         boxController = gameObject.GetComponentInParent<ChessBoxController>(); 
     }
 
-    public void InitPlayer()
+    public void InitPlayer(int size)
     {
+        this.size = size;
         player = new GameObject[size];
         for (int i = 0; i< size; i++)
         {
             player[i] = Instantiate(playerPrefab[i], summonPlace, true);
         }
     }
-
+    private int Rotate(int target)
+    {
+        int bonusRotation = (target + 1) / 11;
+        if (bonusRotation == 0)
+        {
+            return 270;
+        }
+        else if (bonusRotation == 1)
+        {
+            return 360;
+        }
+        else if (bonusRotation == 2)
+        {
+            return 90;
+        }
+        return 180;
+    }
     public void Move(int move, int numberPlayer) 
     {
         if (move == 0)
@@ -57,10 +75,15 @@ public class PlayerController : MonoBehaviour
                 target -= 39;
         }
         playerData[numberPlayer].currentBox = target; 
-
+        
         targetPos = GameObject.Find(target.ToString());
+        //Debug.Log(target);
         player[numberPlayer].transform.position = targetPos.transform.position;
+        int rotate = Rotate(target);
+        float currentRotation = player[numberPlayer].transform.rotation.eulerAngles.y;
+        //Debug.Log(rotate - currentRotation);
 
+        player[numberPlayer].transform.Rotate(0.0f, rotate - currentRotation , 0.0f, Space.World);
         InformText(target, numberPlayer);
 
     }

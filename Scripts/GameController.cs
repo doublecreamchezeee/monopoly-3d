@@ -25,6 +25,7 @@ public class GameController : MonoBehaviour
     private ChessBoxController chessBoxController;
 
     // player controller
+    public int size;
     private PlayerController playerController;
     private int turn;
     private bool isEndTurn;
@@ -44,7 +45,7 @@ public class GameController : MonoBehaviour
     void InitPlayer()
     {
         playerController = gameObject.GetComponent<PlayerController>();
-        playerController.InitPlayer();
+        playerController.InitPlayer(size);
 
     }
     
